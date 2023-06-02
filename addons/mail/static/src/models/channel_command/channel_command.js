@@ -22,6 +22,7 @@ function factory(dependencies) {
          *  result in the context of given thread
          */
         static fetchSuggestions(searchTerm, { thread } = {}) {}
+        static fetchSuggestions2(searchTerm, { thread } = {}) {}
 
         /**
          * Returns a sort function to determine the order of display of channel
@@ -74,6 +75,7 @@ function factory(dependencies) {
          * @returns {[mail.channel_command[], mail.channel_command[]]}
          */
         static searchSuggestions(searchTerm, { thread } = {}) {
+            debugger;
             if (thread.model !== 'mail.channel') {
                 // channel commands are channel specific
                 return [[]];

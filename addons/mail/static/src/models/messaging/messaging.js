@@ -263,6 +263,7 @@ function factory(dependencies) {
             default: true,
         }),
         cannedResponses: one2many('mail.canned_response'),
+        cannedResponses2: one2many('mail.canned_response2'),
         chatWindowManager: one2one('mail.chat_window_manager', {
             default: insertAndReplace(),
             isCausal: true,

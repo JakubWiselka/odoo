@@ -73,7 +73,7 @@ function factory(dependencies) {
                     data2.user = insert(user);
                 }
             }
-
+            // debugger;
             return data2;
         }
 
@@ -88,6 +88,7 @@ function factory(dependencies) {
          *  result in the context of given thread
          */
         static async fetchSuggestions(searchTerm, { thread } = {}) {
+            debugger;
             const kwargs = { search: searchTerm };
             const isNonPublicChannel = thread && thread.model === 'mail.channel' && thread.public !== 'public';
             if (isNonPublicChannel) {
@@ -108,6 +109,33 @@ function factory(dependencies) {
                 thread.update({ members: link(partners) });
             }
         }
+
+
+        // asdasdasdsd
+        // asdkashdkjhasdasda
+        static async fetchSuggestions2(searchTerm, { thread } = {}) {
+            debugger;
+            const kwargs = { search: searchTerm };
+            const isNonPublicChannel = thread && thread.model === 'mail.channel' && thread.public !== 'public';
+            if (isNonPublicChannel) {
+                kwargs.channel_id = thread.id;
+            }
+            const suggestedPartners = await this.env.services.rpc(
+                {
+                    model: 'res.partner',
+                    method: 'get_mention_suggestions2',
+                    kwargs,
+                },
+                { shadow: true },
+            );
+            const partners = this.messaging.models['mail.partner'].insert(suggestedPartners.map(data =>
+                this.messaging.models['mail.partner'].convertData(data)
+            ));
+            if (isNonPublicChannel) {
+                thread.update({ members: link(partners) });
+            }
+        }
+        // asddasdsasadasdasdsd
 
         /**
          * Search for partners matching `keyword`.
@@ -163,6 +191,7 @@ function factory(dependencies) {
          * @returns {[mail.partner[], mail.partner[]]}
          */
         static searchSuggestions(searchTerm, { thread } = {}) {
+            debugger;
             let partners;
             const isNonPublicChannel = thread && thread.model === 'mail.channel' && thread.public !== 'public';
             if (isNonPublicChannel) {

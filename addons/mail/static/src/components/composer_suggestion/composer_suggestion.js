@@ -24,26 +24,37 @@ export class ComposerSuggestion extends Component {
      * @returns {mail.composer_view}
      */
     get composerView() {
+        // debugger;
         return this.messaging && this.messaging.models['mail.composer_view'].get(this.props.composerViewLocalId);
     }
 
     get isCannedResponse() {
+        // debugger;
         return this.props.modelName === "mail.canned_response";
     }
 
+    get isCannedResponse2() {
+        // debugger;
+        return this.props.modelName === "mail.canned_response2";
+    }
+
     get isChannel() {
+        // debugger;
         return this.props.modelName === "mail.thread";
     }
 
     get isCommand() {
+        // debugger;
         return this.props.modelName === "mail.channel_command";
     }
 
     get isPartner() {
+        // debugger;
         return this.props.modelName === "mail.partner";
     }
 
     get record() {
+        // debugger;
         return this.messaging && this.messaging.models[this.props.modelName].get(this.props.recordLocalId);
     }
 
@@ -54,8 +65,12 @@ export class ComposerSuggestion extends Component {
      * @returns {string}
      */
     title() {
+        // debugger;
         if (this.isCannedResponse) {
             return _.str.sprintf("%s: %s", this.record.source, this.record.substitution);
+        }
+        if (this.isCannedResponse2) {
+            return _.str.sprintf("%s: %s", this.record.name, this.record.sunject);
         }
         if (this.isChannel) {
             return this.record.name;
@@ -80,6 +95,7 @@ export class ComposerSuggestion extends Component {
      * @private
      */
     _update() {
+        // debugger;
         if (
             this.composerView &&
             this.composerView.hasToScrollToActiveSuggestion &&
@@ -101,6 +117,7 @@ export class ComposerSuggestion extends Component {
      * @param {Event} ev
      */
     _onClick(ev) {
+        // debugger;
         ev.preventDefault();
         this.composerView.update({ activeSuggestedRecord: link(this.record) });
         this.composerView.insertSuggestion();

@@ -132,7 +132,7 @@ function factory(dependencies) {
         /**
          * Inserts the active suggestion at the current cursor position.
          */
-        insertSuggestion() {
+        async insertSuggestion() {
             const cursorPosition = this.composer.textInputCursorStart;
             let textLeft = this.composer.textInputContent.substring(
                 0,
@@ -152,7 +152,9 @@ function factory(dependencies) {
                     this.composer.textInputContent.length
                 );
             }
-            const recordReplacement = this.activeSuggestedRecord.getMentionText();
+            debugger;
+            const recordReplacement = await this.activeSuggestedRecord.getMentionText();
+            debugger;
             const updateData = {
                 isLastStateChangeProgrammatic: true,
                 textInputContent: textLeft + recordReplacement + ' ' + textRight,
@@ -162,14 +164,15 @@ function factory(dependencies) {
             // Specific cases for channel and partner mentions: the message with
             // the mention will appear in the target channel, or be notified to
             // the target partner.
-            switch (this.activeSuggestedRecord.constructor.modelName) {
-                case 'mail.thread':
-                    Object.assign(updateData, { mentionedChannels: link(this.activeSuggestedRecord) });
-                    break;
-                case 'mail.partner':
-                    Object.assign(updateData, { mentionedPartners: link(this.activeSuggestedRecord) });
-                    break;
-            }
+            debugger;
+            // switch (this.activeSuggestedRecord.constructor.modelName) {
+            //     case 'mail.thread':
+            //         Object.assign(updateData, { mentionedChannels: link(this.activeSuggestedRecord) });
+            //         break;
+            //     case 'mail.partner':
+            //         Object.assign(updateData, { mentionedPartners: link(this.activeSuggestedRecord) });
+            //         break;
+            // }
             this.composer.update(updateData);
         }
 
@@ -581,11 +584,14 @@ function factory(dependencies) {
          * @returns {string}
          */
         _computeSuggestionModelName() {
+            debugger;
             switch (this.suggestionDelimiter) {
                 case '@':
                     return 'mail.partner';
                 case ':':
                     return 'mail.canned_response';
+                case '+':
+                    return 'mail.canned_response2';
                 case '/':
                     return 'mail.channel_command';
                 case '#':
@@ -766,6 +772,7 @@ function factory(dependencies) {
          * @private
          */
         _onChangeDetectSuggestionDelimiterPosition() {
+            debugger;
             if (!this.composer) {
                 return;
             }
@@ -786,8 +793,9 @@ function factory(dependencies) {
             if (this.composer.textInputCursorStart > 0) {
                 candidatePositions.push(this.composer.textInputCursorStart - 1);
             }
-            const suggestionDelimiters = ['@', ':', '#', '/'];
+            const suggestionDelimiters = ['@', ':', '#', '/', '+'];
             for (const candidatePosition of candidatePositions) {
+                debugger;
                 if (
                     candidatePosition < 0 ||
                     candidatePosition >= this.composer.textInputContent.length
@@ -818,6 +826,9 @@ function factory(dependencies) {
          * @private
          */
         _onChangeUpdateSuggestionList() {
+            debugger;
+            debugger;
+            debugger;
             if (this.messaging.isCurrentUserGuest) {
                 return;
             }
@@ -835,7 +846,9 @@ function factory(dependencies) {
                 }
                 const Model = this.messaging.models[this.suggestionModelName];
                 const searchTerm = this.suggestionSearchTerm;
+                debugger;
                 await Model.fetchSuggestions(searchTerm, { thread: this.composer.activeThread });
+                // await Model.fetchSuggestions2(searchTerm, { thread: this.composer.activeThread });
                 if (!this.exists()) {
                     return;
                 }
@@ -863,6 +876,7 @@ function factory(dependencies) {
          * @private
          */
         _updateSuggestionList() {
+            debugger;
             if (
                 this.suggestionDelimiterPosition === undefined ||
                 this.suggestionSearchTerm === undefined ||

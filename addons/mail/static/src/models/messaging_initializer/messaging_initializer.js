@@ -68,6 +68,7 @@ function factory(dependencies) {
          * @param {Object} param0.partner_root
          * @param {Object[]} param0.public_partners
          * @param {Object[]} [param0.shortcodes=[]]
+         * @param {Object[]} [param0.shortcodes2=[]]
          * @param {integer} [param0.starred_counter=0]
          */
         async _init({
@@ -84,6 +85,7 @@ function factory(dependencies) {
             partner_root,
             public_partners,
             shortcodes = [],
+            shortcodes2 = [],
             starred_counter = 0
         }) {
             const discuss = this.messaging.discuss;
@@ -113,6 +115,7 @@ function factory(dependencies) {
             }
             // various suggestions in no particular order
             this._initCannedResponses(shortcodes);
+            this._initCannedResponses2(shortcodes2);
             // FIXME: guests should have (at least some) commands available
             if (!this.messaging.isCurrentUserGuest) {
                 this._initCommands();
@@ -133,6 +136,15 @@ function factory(dependencies) {
         _initCannedResponses(cannedResponsesData) {
             this.messaging.update({
                 cannedResponses: insert(cannedResponsesData),
+            });
+        }
+        /**
+         * @private
+         * @param {Object[]} cannedResponsesData2
+         */
+        _initCannedResponses2(cannedResponsesData2) {
+            this.messaging.update({
+                cannedResponses2: insert(cannedResponsesData2),
             });
         }
 

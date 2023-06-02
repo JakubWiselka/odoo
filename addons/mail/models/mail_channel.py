@@ -1136,6 +1136,14 @@ class Channel(models.Model):
         return self.search_read(domain, ['id', 'name', 'public', 'channel_type'], limit=limit)
 
     @api.model
+    def get_mention_suggestions2(self, search, limit=8):
+        """ Return 'limit'-first channels' id, name and public fields such that the name matches a
+            'search' string. Exclude channels of type chat (DM), and private channels the current
+            user isn't registered to. """
+        a = 3
+        return self.search_read(domain, ['id', 'name', 'public', 'channel_type'], limit=limit)
+
+    @api.model
     def channel_fetch_listeners(self, uuid):
         """ Return the id, name and email of partners listening to the given channel """
         self._cr.execute("""

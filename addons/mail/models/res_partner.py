@@ -210,6 +210,37 @@ class Partner(models.Model):
                 break
             partners |= self.search(expression.AND([[('id', 'not in', partners.ids)], domain]), limit=remaining_limit)
         return list(partners.mail_partner_format().values())
+    
+    @api.model
+    def get_mention_suggestions2(self, search, limit=8, channel_id=None):
+        """ Return 'limit'-first partners' such that the name or email matches a 'search' string.
+            Prioritize partners that are also (internal) users, and then extend the research to all partners.
+            If channel_id is given, only members of this channel are returned.
+            The return format is a list of partner data (as per returned by `mail_partner_format()`).
+        """
+        search_dom = expression.OR([[('name', 'ilike', search)], [('email', 'ilike', search)]])
+        # search_dom = expression.AND([[('active', '=', True), ('type', '!=', 'private')], search_dom])
+        # if channel_id:
+        #     search_dom = expression.AND([[('channel_ids', 'in', channel_id)], search_dom])
+        # domain_is_user = expression.AND([[('user_ids.id', '!=', False), ('user_ids.active', '=', True)], search_dom])
+        # priority_conditions = [
+        #     expression.AND([domain_is_user, [('partner_share', '=', False)]]),  # Search partners that are internal users
+        #     domain_is_user,  # Search partners that are users
+        #     search_dom,  # Search partners that are not users
+        # ]
+        # partners = self.env['res.partner']
+        # for domain in priority_conditions:
+        #     remaining_limit = limit - len(partners)
+        #     if remaining_limit <= 0:
+        #         break
+        #     partners |= self.search(expression.AND([[('id', 'not in', partners.ids)], domain]), limit=remaining_limit)
+        bc = []
+        for a in self.env['mail.template'].search([('name', 'ilike', search)], limit=limit):
+            bc.append({
+                "id": a.id,
+                "name": str(a.body_html.striptags()),
+            })
+        return bc
 
     @api.model
     def im_search(self, name, limit=20):

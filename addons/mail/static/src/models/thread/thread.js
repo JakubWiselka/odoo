@@ -368,10 +368,40 @@ function factory(dependencies) {
          *  result in the context of given thread
          */
         static async fetchSuggestions(searchTerm, { thread } = {}) {
+            debugger;
             const channelsData = await this.env.services.rpc(
                 {
                     model: 'mail.channel',
                     method: 'get_mention_suggestions',
+                    kwargs: { search: searchTerm },
+                },
+                { shadow: true },
+            );
+            this.messaging.models['mail.thread'].insert(channelsData.map(channelData =>
+                Object.assign(
+                    { model: 'mail.channel' },
+                    this.messaging.models['mail.thread'].convertData(channelData),
+                )
+            ));
+        }
+    // adssaddsaaaaaaaaaaaaaaaaa
+        /**
+         * Fetches threads matching the given composer search state to extend
+         * the JS knowledge and to update the suggestion list accordingly.
+         * More specifically only thread of model 'mail.channel' are fetched.
+         *
+         * @static
+         * @param {string} searchTerm
+         * @param {Object} [options={}]
+         * @param {mail.thread} [options.thread] prioritize and/or restrict
+         *  result in the context of given thread
+         */
+        static async fetchSuggestions2(searchTerm, { thread } = {}) {
+            debugger;
+            const channelsData = await this.env.services.rpc(
+                {
+                    model: 'mail.channel',
+                    method: 'get_mention_suggestions2',
                     kwargs: { search: searchTerm },
                 },
                 { shadow: true },
@@ -686,6 +716,7 @@ function factory(dependencies) {
          * @returns {[mail.threads[], mail.threads[]]}
          */
         static searchSuggestions(searchTerm, { thread } = {}) {
+            debugger;
             let threads;
             if (thread && thread.model === 'mail.channel' && thread.public !== 'public') {
                 // Only return the current channel when in the context of a
